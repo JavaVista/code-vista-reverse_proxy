@@ -1,0 +1,33 @@
+version: '3'
+services:
+  reverse_proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    image: code-vista-reverse_proxy:1.0
+    ports:
+      - '80:80'
+
+  frontend:
+    build:
+      context: ./code-vista
+      dockerfile: Dockerfile
+      args:
+        VITE_SUPABASE_URL: <your_supabase_url>
+        VITE_SUPABASE_KEY: <your_supabase_anon_key>
+        VITE_SUPABASE_SECRET_KEY: <your_supabase_secret_key>
+    image: code-vista-frontend:1.0
+    ports:
+      - '3000:3000'
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: development
+        ROOT_DOMAIN_DEV: <replace_with_your_domain_dev_or_localhost_dev_url>
+        ROOT_DOMAIN_PROD: <replace_with_your_domain_url>
+    image: code-vista-backend:1.0
+    ports:
+      - '3005:3005'
